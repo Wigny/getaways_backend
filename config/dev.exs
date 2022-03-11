@@ -23,6 +23,7 @@ config :getaways, GetawaysWeb.Endpoint,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "Yaj88Fu0PNe8x3bXOymfGFzvqxQ9tMeIZPYbvYgIUQnu38wGm5ZIVABdQ1FDXWI/",
+  server: true,
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
