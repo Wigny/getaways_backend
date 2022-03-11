@@ -1,8 +1,9 @@
 defmodule GetawaysWeb.Schema do
   use Absinthe.Schema
 
-  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
 
+  alias Getaways.{Accounts, Vacation}
   alias GetawaysWeb.Resolvers
 
   import_types Absinthe.Type.Custom
@@ -55,7 +56,12 @@ defmodule GetawaysWeb.Schema do
     field :price_per_night, non_null(:decimal)
     field :image, non_null(:string)
     field :image_thumbnail, non_null(:string)
-    field :bookings, list_of(:booking), resolve: dataloader(Vacation)
+
+    field :bookings, list_of(:booking) do
+      arg :limit, :integer, default_value: 100
+      resolve dataloader(Vacation, :bookings, args: %{scope: :places})
+    end
+
     field :reviews, list_of(:review), resolve: dataloader(Vacation)
   end
 
@@ -65,7 +71,7 @@ defmodule GetawaysWeb.Schema do
     field :end_date, non_null(:date)
     field :state, non_null(:string)
     field :total_price, non_null(:decimal)
-    field :user, non_null(:user), resolve: dataloader(Vacation)
+    field :user, non_null(:user), resolve: dataloader(Accounts)
     field :place, non_null(:place), resolve: dataloader(Vacation)
   end
 
@@ -74,20 +80,27 @@ defmodule GetawaysWeb.Schema do
     field :rating, non_null(:integer)
     field :comment, non_null(:string)
     field :inserted_at, non_null(:naive_datetime)
-    field :user, non_null(:user), resolve: dataloader(Vacation)
+    field :user, non_null(:user), resolve: dataloader(Accounts)
     field :place, non_null(:place), resolve: dataloader(Vacation)
   end
 
   object :user do
     field :username, non_null(:string)
     field :email, non_null(:string)
-    field :bookings, list_of(:booking), resolve: dataloader(Vacation)
+
+    field :bookings, list_of(:booking) do
+      resolve dataloader(Vacation, :bookings, args: %{scope: :user})
+    end
+
     field :reviews, list_of(:review), resolve: dataloader(Vacation)
   end
 
   def context(ctx) do
-    source = Dataloader.Ecto.new(Getaways.Repo)
-    loader = Dataloader.add_source(Dataloader.new(), Vacation, source)
+    loader =
+      Dataloader.new()
+      |> Dataloader.add_source(Vacation, Vacation.datasource())
+      |> Dataloader.add_source(Accounts, Accounts.datasource())
+
     Map.put(ctx, :loader, loader)
   end
 

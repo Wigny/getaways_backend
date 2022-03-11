@@ -149,8 +149,7 @@ defmodule Getaways.Vacation do
   end
 
   def query(Booking, %{scope: :user}) do
-    Booking
-    |> order_by(asc: :start_date)
+    order_by(Booking, asc: :start_date)
   end
 
   def query(queryable, _) do
