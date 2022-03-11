@@ -37,7 +37,8 @@ defmodule Getaways.Vacation do
   def list_places(criteria) do
     query = from(p in Place)
 
-    Enum.reduce(criteria, query, fn
+    criteria
+    |> Enum.reduce(query, fn
       {:limit, limit}, query ->
         from p in query, limit: ^limit
 
@@ -94,6 +95,13 @@ defmodule Getaways.Vacation do
             type(^end_date, :date)
           ),
       where: is_nil(booking.place_id)
+  end
+
+  def bookings_for_place(%Place{} = place) do
+    Booking
+    |> where(place_id: ^place.id)
+    |> where(state: "reserved")
+    |> Repo.all()
   end
 
   @doc """
