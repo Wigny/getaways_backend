@@ -5,13 +5,19 @@ defmodule Getaways.Application do
 
   use Application
 
+  @impl true
   def start(_type, _args) do
-    # List all child processes to be supervised
     children = [
+      # Start the Ecto repository
       Getaways.Repo,
-      GetawaysWeb.Endpoint,
-      {Phoenix.PubSub, [name: Getaways.PubSub, adapter: Phoenix.PubSub.PG2]},
-      {Absinthe.Subscription, GetawaysWeb.Endpoint}
+      # Start the Telemetry supervisor
+      GetawaysWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: Getaways.PubSub},
+      # Start the Endpoint (http/https)
+      GetawaysWeb.Endpoint
+      # Start a worker by calling: Getaways.Worker.start_link(arg)
+      # {Getaways.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -22,6 +28,7 @@ defmodule Getaways.Application do
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
+  @impl true
   def config_change(changed, _new, removed) do
     GetawaysWeb.Endpoint.config_change(changed, removed)
     :ok

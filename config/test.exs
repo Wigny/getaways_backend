@@ -1,20 +1,29 @@
 import Config
 
-config :pbkdf2_elixir, :rounds, 1
+# Configure your database
+#
+# The MIX_TEST_PARTITION environment variable can be used
+# to provide built-in test partitioning in CI environment.
+# Run `mix help test` for more information.
+config :getaways, Getaways.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "getaways_test#{System.get_env("MIX_TEST_PARTITION")}",
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_size: 10
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :getaways, GetawaysWeb.Endpoint,
-  http: [port: 4002],
+  http: [ip: {127, 0, 0, 1}, port: 4002],
+  secret_key_base: "0kdFbyk6SpPsPvg4CV9UznigWQCS4WWa/WlkwlsxY3SUCRLfQks2F04EDRVUlLG+",
   server: false
+
+config :pbkdf2_elixir, :rounds, 1
 
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-# Configure your database
-config :getaways, Getaways.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "getaways_test",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+# Initialize plugs at runtime for faster test compilation
+config :phoenix, :plug_init_mode, :runtime

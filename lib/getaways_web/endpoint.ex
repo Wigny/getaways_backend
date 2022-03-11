@@ -1,12 +1,16 @@
 defmodule GetawaysWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :getaways
-  use Absinthe.Phoenix.Endpoint
 
-  socket "/socket", GetawaysWeb.UserSocket,
-    websocket: true,
-    longpoll: false
+  # The session will be stored in the cookie and signed,
+  # this means its contents can be read but not tampered with.
+  # Set :encryption_salt if you would also like to encrypt it.
+  @session_options [
+    store: :cookie,
+    key: "_getaways_key",
+    signing_salt: "0mNDKCtR"
+  ]
 
-  plug CORSPlug
+  # socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -16,16 +20,17 @@ defmodule GetawaysWeb.Endpoint do
     at: "/",
     from: :getaways,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(assets fonts images favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
     plug Phoenix.CodeReloader
+    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :getaways
   end
 
   plug Plug.RequestId
-  plug Plug.Logger
+  plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
@@ -34,14 +39,6 @@ defmodule GetawaysWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
-
-  # The session will be stored in the cookie and signed,
-  # this means its contents can be read but not tampered with.
-  # Set :encryption_salt if you would also like to encrypt it.
-  plug Plug.Session,
-    store: :cookie,
-    key: "_getaways_key",
-    signing_salt: "shqjOspJ"
-
+  plug Plug.Session, @session_options
   plug GetawaysWeb.Router
 end
