@@ -1,7 +1,7 @@
 defmodule GetawaysWeb.Schema do
   use Absinthe.Schema
 
-  alias Getaways.Vacation
+  alias GetawaysWeb.Resolvers
 
   import_types Absinthe.Type.Custom
 
@@ -9,10 +9,7 @@ defmodule GetawaysWeb.Schema do
     @desc "Get a place by it's slug"
     field :place, :place do
       arg :slug, non_null(:string)
-
-      resolve fn _, %{slug: slug}, _ ->
-        {:ok, Vacation.get_place_by_slug!(slug)}
-      end
+      resolve &Resolvers.Vacation.place/3
     end
 
     @desc "Get a list of places"
@@ -20,10 +17,7 @@ defmodule GetawaysWeb.Schema do
       arg :limit, :integer
       arg :order, :sort_order, default_value: :asc
       arg :filter, :place_filter
-
-      resolve fn _, args, _ ->
-        {:ok, Vacation.list_places(args)}
-      end
+      resolve &Resolvers.Vacation.places/3
     end
   end
 
