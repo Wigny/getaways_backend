@@ -24,7 +24,7 @@ defmodule GetawaysWeb.Schema.Subscription.CanceledBookingTest do
     #
     # 1. Setup the subscription
     #
-    ref = push_doc socket, subscription
+    ref = push_doc(socket, subscription)
     assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
     #
@@ -36,13 +36,14 @@ defmodule GetawaysWeb.Schema.Subscription.CanceledBookingTest do
 
     conn = build_conn() |> auth_user(user)
 
-    conn = post conn, "/api",
-      query: @mutation,
-      variables: input
+    conn =
+      post conn, "/api",
+        query: @mutation,
+        variables: input
 
     expected = %{
       "data" => %{
-       "cancelBooking" => %{
+        "cancelBooking" => %{
           "id" => Integer.to_string(booking.id)
         }
       }
@@ -63,6 +64,7 @@ defmodule GetawaysWeb.Schema.Subscription.CanceledBookingTest do
       },
       subscriptionId: subscription_id
     }
+
     assert_push "subscription:data", push
     assert expected == push
   end

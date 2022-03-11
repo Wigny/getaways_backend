@@ -21,11 +21,11 @@ defmodule GetawaysWeb.Schema.Subscription.NewBookingTest do
         }
       }
     """
-      
+
     #
     # 1. Setup the subscription
     #
-    ref = push_doc socket, subscription
+    ref = push_doc(socket, subscription)
     assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
     #
@@ -34,18 +34,19 @@ defmodule GetawaysWeb.Schema.Subscription.NewBookingTest do
     booking = %{
       "startDate" => "2018-12-01",
       "endDate" => "2018-12-05",
-      "placeId" => place.id,
+      "placeId" => place.id
     }
 
     conn = build_conn() |> auth_user(user)
 
-    conn = post conn, "/api",
-      query: @mutation,
-      variables: booking
+    conn =
+      post conn, "/api",
+        query: @mutation,
+        variables: booking
 
     expected = %{
       "data" => %{
-       "createBooking" => %{
+        "createBooking" => %{
           "startDate" => booking["startDate"],
           "endDate" => booking["endDate"]
         }
@@ -68,6 +69,7 @@ defmodule GetawaysWeb.Schema.Subscription.NewBookingTest do
       },
       subscriptionId: subscription_id
     }
+
     assert_push "subscription:data", push
     assert expected == push
   end

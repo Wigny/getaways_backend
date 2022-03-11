@@ -15,7 +15,7 @@ defmodule Getaways.TestHelpers do
   def user_fixture(attrs \\ %{}) do
     username = "user-#{System.unique_integer([:positive])}"
 
-    attrs = 
+    attrs =
       Enum.into(attrs, %{
         username: "test-user",
         email: attrs[:email] || "#{username}@example.com",
@@ -33,7 +33,7 @@ defmodule Getaways.TestHelpers do
   def place_fixture(attrs \\ %{}) do
     name = "place-#{System.unique_integer([:positive])}"
 
-    attrs = 
+    attrs =
       Enum.into(attrs, %{
         name: attrs[:name] || name,
         slug: attrs[:slug] || name,
@@ -59,7 +59,7 @@ defmodule Getaways.TestHelpers do
         end_date: ~D[2019-04-05]
       })
 
-    {:ok, booking} = 
+    {:ok, booking} =
       %Booking{}
       |> Booking.changeset(attrs)
       |> Ecto.Changeset.put_assoc(:user, user)
@@ -69,13 +69,13 @@ defmodule Getaways.TestHelpers do
   end
 
   def review_fixture(%User{} = user, attrs \\ %{}) do
-    attrs = 
+    attrs =
       Enum.into(attrs, %{
         comment: "some comment",
-        rating: 5,
+        rating: 5
       })
 
-    {:ok, review} =     
+    {:ok, review} =
       %Review{}
       |> Review.changeset(attrs)
       |> Ecto.Changeset.put_assoc(:user, user)
@@ -85,7 +85,7 @@ defmodule Getaways.TestHelpers do
   end
 
   def places_fixture() do
-    place1 = 
+    place1 =
       %Place{
         name: "Place 1",
         slug: "place-1",
@@ -98,9 +98,10 @@ defmodule Getaways.TestHelpers do
         price_per_night: Decimal.from_float(100.00),
         image: "https://i.imgur.com/LZnJJ9s.jpg",
         image_thumbnail: "https://i.imgur.com/LZnJJ9s.jpg"
-        } |> Repo.insert!
+      }
+      |> Repo.insert!()
 
-    place2 = 
+    place2 =
       %Place{
         name: "Place 2",
         slug: "place-2",
@@ -113,9 +114,10 @@ defmodule Getaways.TestHelpers do
         price_per_night: Decimal.from_float(200.00),
         image: "https://i.imgur.com/LZnJJ9s.jpg",
         image_thumbnail: "https://i.imgur.com/LZnJJ9s.jpg"
-        } |> Repo.insert!
+      }
+      |> Repo.insert!()
 
-    place3 = 
+    place3 =
       %Place{
         name: "Place 3",
         slug: "place-3",
@@ -128,9 +130,9 @@ defmodule Getaways.TestHelpers do
         price_per_night: Decimal.from_float(300.00),
         image: "https://i.imgur.com/LZnJJ9s.jpg",
         image_thumbnail: "https://i.imgur.com/LZnJJ9s.jpg"
-        } |> Repo.insert!
+      }
+      |> Repo.insert!()
 
     [place1, place2, place3]
   end
-
 end

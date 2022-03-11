@@ -16,23 +16,24 @@ defmodule GetawaysWeb.Schema.Mutation.CreateBookingTest do
     input = %{
       "startDate" => "2018-12-01",
       "endDate" => "2018-12-05",
-      "placeId" => place.id,
+      "placeId" => place.id
     }
 
     conn = build_conn() |> auth_user(user)
 
-    conn = post conn, "/api",
-      query: @query,
-      variables: input
+    conn =
+      post conn, "/api",
+        query: @query,
+        variables: input
 
     assert %{
-      "data" => %{
-       "createBooking" => %{
-          "startDate" => "2018-12-01",
-          "endDate" => "2018-12-05"
-        }
-      }
-    } == json_response(conn, 200)
+             "data" => %{
+               "createBooking" => %{
+                 "startDate" => "2018-12-01",
+                 "endDate" => "2018-12-05"
+               }
+             }
+           } == json_response(conn, 200)
   end
 
   test "createBooking mutation fails if variables are invalid" do
@@ -42,25 +43,28 @@ defmodule GetawaysWeb.Schema.Mutation.CreateBookingTest do
     input = %{
       "startDate" => nil,
       "endDate" => "2018-12-05",
-      "placeId" => place.id,
+      "placeId" => place.id
     }
 
     conn = build_conn() |> auth_user(user)
 
-    conn = post conn, "/api",
-      query: @query,
-      variables: input
+    conn =
+      post conn, "/api",
+        query: @query,
+        variables: input
 
     assert %{
-      "errors" => [
-        %{
-          "message" => "Argument \"startDate\" has invalid value $startDate.", "locations" => [%{"column" => 0, "line" => 2}]
-        }, 
-        %{
-          "message" => "Variable \"startDate\": Expected non-null, found null.",
-          "locations" => [%{"column" => 0, "line" => 1}]
-        }
-      ]} == json_response(conn, 200)
+             "errors" => [
+               %{
+                 "message" => "Argument \"startDate\" has invalid value $startDate.",
+                 "locations" => [%{"column" => 0, "line" => 2}]
+               },
+               %{
+                 "message" => "Variable \"startDate\": Expected non-null, found null.",
+                 "locations" => [%{"column" => 0, "line" => 1}]
+               }
+             ]
+           } == json_response(conn, 200)
   end
 
   test "createBooking mutation fails if not signed in" do
@@ -69,23 +73,24 @@ defmodule GetawaysWeb.Schema.Mutation.CreateBookingTest do
     input = %{
       "startDate" => "2018-12-01",
       "endDate" => "2018-12-05",
-      "placeId" => place.id,
+      "placeId" => place.id
     }
 
-    conn = post(build_conn(), "/api", %{
-      query: @query,
-      variables: input
-    })
+    conn =
+      post(build_conn(), "/api", %{
+        query: @query,
+        variables: input
+      })
 
     assert %{
-      "errors" => [
-        %{
-          "locations" => [%{"column" => 0, "line" => 2}],
-          "message" => "Please sign in first!",
-          "path" => ["createBooking"]
-        }
-      ],
-      "data" => %{"createBooking" => nil}
-    } == json_response(conn, 200)
+             "errors" => [
+               %{
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" => "Please sign in first!",
+                 "path" => ["createBooking"]
+               }
+             ],
+             "data" => %{"createBooking" => nil}
+           } == json_response(conn, 200)
   end
 end

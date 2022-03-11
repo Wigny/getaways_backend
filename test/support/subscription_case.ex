@@ -12,8 +12,10 @@ defmodule GetawaysWeb.SubscriptionCase do
       use Phoenix.ConnTest
 
       use GetawaysWeb.ChannelCase
+
       use Absinthe.Phoenix.SubscriptionTest,
         schema: GetawaysWeb.Schema.Schema
+
       import Getaways.TestHelpers
 
       defp auth_user(conn, user) do
@@ -24,10 +26,8 @@ defmodule GetawaysWeb.SubscriptionCase do
       setup do
         places_fixture()
 
-        {:ok, socket} =
-            Phoenix.ChannelTest.connect(GetawaysWeb.UserSocket, %{})
-        {:ok, socket} =
-            Absinthe.Phoenix.SubscriptionTest.join_absinthe(socket)
+        {:ok, socket} = Phoenix.ChannelTest.connect(GetawaysWeb.UserSocket, %{})
+        {:ok, socket} = Absinthe.Phoenix.SubscriptionTest.join_absinthe(socket)
 
         {:ok, socket: socket}
       end

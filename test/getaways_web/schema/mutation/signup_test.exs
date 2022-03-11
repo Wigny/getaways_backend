@@ -17,14 +17,17 @@ defmodule GetawaysWeb.Schema.Mutation.SignupTest do
       password: "secret"
     }
 
-    conn = post(build_conn(), "/api", %{
-      query: @query,
-      variables: input
-    })
+    conn =
+      post(build_conn(), "/api", %{
+        query: @query,
+        variables: input
+      })
 
-    assert %{"data" => %{
-      "signup" => session
-    }} = json_response(conn, 200)
+    assert %{
+             "data" => %{
+               "signup" => session
+             }
+           } = json_response(conn, 200)
 
     assert %{"user" => %{"username" => "test"}} == session
   end

@@ -22,8 +22,15 @@ defmodule Getaways.Vacation.Place do
   end
 
   def changeset(place, attrs) do
-    required_fields = [:name, :slug, :description, :location, 
-                       :price_per_night, :image, :image_thumbnail]
+    required_fields = [
+      :name,
+      :slug,
+      :description,
+      :location,
+      :price_per_night,
+      :image,
+      :image_thumbnail
+    ]
 
     optional_fields = [:max_guests, :pet_friendly, :pool, :wifi]
 

@@ -35,7 +35,7 @@ defmodule Getaways.Vacation do
   """
 
   def list_places(criteria) do
-    query = from p in Place
+    query = from(p in Place)
 
     Enum.reduce(criteria, query, fn
       {:limit, limit}, query ->
@@ -47,7 +47,7 @@ defmodule Getaways.Vacation do
       {:order, order}, query ->
         from p in query, order_by: [{^order, :id}]
     end)
-    |> Repo.all
+    |> Repo.all()
   end
 
   defp filter_with(filters, query) do
@@ -143,13 +143,13 @@ defmodule Getaways.Vacation do
   def query(Booking, %{scope: :place, limit: limit}) do
     Booking
     |> where(state: "reserved")
-    |> order_by([desc: :start_date])
+    |> order_by(desc: :start_date)
     |> limit(^limit)
   end
 
   def query(Booking, %{scope: :user}) do
     Booking
-    |> order_by([asc: :start_date])
+    |> order_by(asc: :start_date)
   end
 
   def query(queryable, _) do

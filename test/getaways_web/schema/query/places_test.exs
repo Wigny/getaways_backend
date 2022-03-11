@@ -14,14 +14,15 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     conn = build_conn()
     conn = get conn, "/api", query: @query
 
-    assert %{"data" => %{
-      "places" => [
-        %{"name" => "Place 1"},
-        %{"name" => "Place 2"},
-        %{"name" => "Place 3"}
-      ]
-      }
-    } = json_response(conn, 200)
+    assert %{
+             "data" => %{
+               "places" => [
+                 %{"name" => "Place 1"},
+                 %{"name" => "Place 2"},
+                 %{"name" => "Place 3"}
+               ]
+             }
+           } = json_response(conn, 200)
   end
 
   @query """
@@ -38,13 +39,13 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     response = get(build_conn(), "/api", query: @query, variables: @variables)
 
     assert %{
-      "data" => %{
-        "places" => [
-          %{"name" => "Place 1"},
-          %{"name" => "Place 2"}
-        ]
-      }
-    } = json_response(response, 200)
+             "data" => %{
+               "places" => [
+                 %{"name" => "Place 1"},
+                 %{"name" => "Place 2"}
+               ]
+             }
+           } = json_response(response, 200)
   end
 
   @query """
@@ -59,14 +60,14 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     places_fixture()
 
     response = get(build_conn(), "/api", query: @query, variables: @variables)
-    
+
     assert %{
-      "data" => %{
-        "places" => [
-          %{"name" => "Place 1"},
-        ]
-      }
-    } == json_response(response, 200)
+             "data" => %{
+               "places" => [
+                 %{"name" => "Place 1"}
+               ]
+             }
+           } == json_response(response, 200)
   end
 
   @query """
@@ -81,10 +82,9 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     places_fixture()
 
     response = get(build_conn(), "/api", query: @query, variables: @variables)
-    
+
     assert %{"errors" => _} = json_response(response, 200)
   end
-
 
   @query """
   query ($filter: PlaceFilter!) {
@@ -93,21 +93,25 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     }
   }
   """
-  @variables %{"filter" => %{
-    "pet_friendly" => true, "pool" => true, "wifi" => false
-  }}
+  @variables %{
+    "filter" => %{
+      "pet_friendly" => true,
+      "pool" => true,
+      "wifi" => false
+    }
+  }
   test "places query returns places filtered by pet friendly, pool, wifi" do
     places_fixture()
 
     response = get(build_conn(), "/api", query: @query, variables: @variables)
-    
+
     assert %{
-      "data" => %{
-        "places" => [
-          %{"name" => "Place 2"}
-        ]
-      }
-    } == json_response(response, 200)
+             "data" => %{
+               "places" => [
+                 %{"name" => "Place 2"}
+               ]
+             }
+           } == json_response(response, 200)
   end
 
   @query """
@@ -117,20 +121,20 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     }
   }
   """
-  @variables %{"filter" => %{ "guest_count" => 2 }}
+  @variables %{"filter" => %{"guest_count" => 2}}
   test "places query returns places filtered by guest count" do
     places_fixture()
 
     response = get(build_conn(), "/api", query: @query, variables: @variables)
-    
+
     assert %{
-      "data" => %{
-        "places" => [
-          %{"name" => "Place 2"},
-          %{"name" => "Place 3"}
-        ]
-      }
-    } == json_response(response, 200)
+             "data" => %{
+               "places" => [
+                 %{"name" => "Place 2"},
+                 %{"name" => "Place 3"}
+               ]
+             }
+           } == json_response(response, 200)
   end
 
   @query """
@@ -140,12 +144,14 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     }
   }
   """
-  @variables %{"filter" => %{
-    "available_between" => %{
-      start_date: "2019-01-05",
-      end_date: "2019-01-10"
+  @variables %{
+    "filter" => %{
+      "available_between" => %{
+        start_date: "2019-01-05",
+        end_date: "2019-01-10"
+      }
     }
-  }}
+  }
   test "places query returns places filtered by available dates" do
     places_fixture()
     place = place("Place 1")
@@ -158,15 +164,15 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     })
 
     response = get(build_conn(), "/api", query: @query, variables: @variables)
-    
+
     assert %{
-      "data" => %{
-        "places" => [
-          %{"name" => "Place 2"},
-          %{"name" => "Place 3"}
-        ]
-      }
-    } == json_response(response, 200)
+             "data" => %{
+               "places" => [
+                 %{"name" => "Place 2"},
+                 %{"name" => "Place 3"}
+               ]
+             }
+           } == json_response(response, 200)
   end
 
   @query """
@@ -183,10 +189,10 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     response = get(build_conn(), "/api", query: @query, variables: @variables)
 
     assert %{
-      "data" => %{
-        "places" => [%{"name" => "Place 3"} | _]
-      }
-    } = json_response(response, 200)
+             "data" => %{
+               "places" => [%{"name" => "Place 3"} | _]
+             }
+           } = json_response(response, 200)
   end
 
   @variables %{"order" => "ASC"}
@@ -194,12 +200,11 @@ defmodule GetawaysWeb.Schema.Query.PlacesTest do
     places_fixture()
 
     response = get(build_conn(), "/api", query: @query, variables: @variables)
-    
-    assert %{
-      "data" => %{
-        "places" => [%{"name" => "Place 1"} | _]
-      }
-    } = json_response(response, 200)
-  end
 
+    assert %{
+             "data" => %{
+               "places" => [%{"name" => "Place 1"} | _]
+             }
+           } = json_response(response, 200)
+  end
 end

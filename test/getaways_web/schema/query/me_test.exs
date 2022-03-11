@@ -22,25 +22,25 @@ defmodule GetawaysWeb.Schema.Query.MeTest do
       place_id: place.id
     }
 
-    assert {:ok, booking} = 
-      Getaways.Vacation.create_booking(user, booking_attrs)
+    assert {:ok, booking} = Getaways.Vacation.create_booking(user, booking_attrs)
 
     conn = build_conn() |> auth_user(user)
 
     conn = get conn, "/api", query: @query
+
     assert %{
-      "data" => %{
-        "me" => %{ 
-          "username" => user_name,
-          "bookings" => [
-              %{
-                "startDate" => "2019-04-01",
-                "endDate" => "2019-04-05"
-              }
-            ]
-        }
-      }
-    } = json_response(conn, 200)
+             "data" => %{
+               "me" => %{
+                 "username" => user_name,
+                 "bookings" => [
+                   %{
+                     "startDate" => "2019-04-01",
+                     "endDate" => "2019-04-05"
+                   }
+                 ]
+               }
+             }
+           } = json_response(conn, 200)
 
     assert user.username == user_name
   end
@@ -51,9 +51,9 @@ defmodule GetawaysWeb.Schema.Query.MeTest do
     conn = get conn, "/api", query: @query
 
     assert %{
-      "data" => %{
-        "me" => nil
-      }
-    } == json_response(conn, 200)
+             "data" => %{
+               "me" => nil
+             }
+           } == json_response(conn, 200)
   end
 end

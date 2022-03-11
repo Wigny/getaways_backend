@@ -14,13 +14,11 @@ defmodule GetawaysWeb.Schema.Query.PlaceTest do
 
     conn = build_conn()
     conn = get conn, "/api", query: @query, variables: @variables
-    
-    assert %{
-      "data" => %{
-        "place" =>
-          %{"name" => "Place 1"}
-      }
-    } == json_response(conn, 200)
-  end
 
+    assert %{
+             "data" => %{
+               "place" => %{"name" => "Place 1"}
+             }
+           } == json_response(conn, 200)
+  end
 end

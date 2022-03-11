@@ -25,22 +25,26 @@ defmodule GetawaysWeb.Schema.Mutation.SigninTest do
       "password" => user_attrs[:password]
     }
 
-    conn = post(build_conn(), "/api", %{
-      query: @query,
-      variables: input
-    })
-
-    assert %{"data" => %{
-      "signin" => session
-    }} = json_response(conn, 200)
+    conn =
+      post(build_conn(), "/api", %{
+        query: @query,
+        variables: input
+      })
 
     assert %{
-      "token" => token,
-      "user"  => user_data
-    } = session
+             "data" => %{
+               "signin" => session
+             }
+           } = json_response(conn, 200)
+
+    assert %{
+             "token" => token,
+             "user" => user_data
+           } = session
 
     assert %{"username" => user.username} == user_data
+
     assert {:ok, %{id: user.id}} ==
-      GetawaysWeb.AuthToken.verify(token)
+             GetawaysWeb.AuthToken.verify(token)
   end
 end

@@ -14,7 +14,7 @@ defmodule Getaways.VacationTest do
   describe "list_places/1" do
     test "returns all places by default" do
       places = places_fixture()
-      
+
       results = Vacation.list_places([])
 
       assert length(results) == length(places)
@@ -22,7 +22,7 @@ defmodule Getaways.VacationTest do
 
     test "returns limited number of places" do
       places_fixture()
-      
+
       criteria = %{limit: 1}
 
       results = Vacation.list_places(criteria)
@@ -32,62 +32,62 @@ defmodule Getaways.VacationTest do
 
     test "returns limited and ordered places" do
       places_fixture()
-      
+
       args = %{limit: 3, order: :desc}
 
       results = Vacation.list_places(args)
 
-      assert Enum.map(results, &(&1.name)) == ["Place 3", "Place 2", "Place 1"]
+      assert Enum.map(results, & &1.name) == ["Place 3", "Place 2", "Place 1"]
     end
 
     test "returns places filtered by matching name" do
       places_fixture()
-      
+
       criteria = %{filter: %{matching: "1"}}
 
       results = Vacation.list_places(criteria)
 
-      assert Enum.map(results, &(&1.name)) == ["Place 1"]
+      assert Enum.map(results, & &1.name) == ["Place 1"]
     end
 
     test "returns places filtered by pet friendly" do
       places_fixture()
-      
+
       criteria = %{filter: %{pet_friendly: true}}
 
       results = Vacation.list_places(criteria)
 
-      assert Enum.map(results, &(&1.name)) == ["Place 2", "Place 3"]
+      assert Enum.map(results, & &1.name) == ["Place 2", "Place 3"]
     end
 
     test "returns places filtered by pool" do
       places_fixture()
-      
+
       criteria = %{filter: %{pool: true}}
 
       results = Vacation.list_places(criteria)
 
-      assert Enum.map(results, &(&1.name)) == ["Place 2"]
+      assert Enum.map(results, & &1.name) == ["Place 2"]
     end
 
     test "returns places filtered by wifi" do
       places_fixture()
-      
+
       criteria = %{filter: %{wifi: true}}
 
       results = Vacation.list_places(criteria)
 
-      assert Enum.map(results, &(&1.name)) == ["Place 1", "Place 3"]
+      assert Enum.map(results, & &1.name) == ["Place 1", "Place 3"]
     end
 
     test "returns places filtered by guest count" do
       places_fixture()
-      
+
       criteria = %{filter: %{guest_count: 3}}
 
       results = Vacation.list_places(criteria)
 
-      assert Enum.map(results, &(&1.name)) == ["Place 3"]
+      assert Enum.map(results, & &1.name) == ["Place 3"]
     end
 
     test "returns places available between dates" do
@@ -170,8 +170,7 @@ defmodule Getaways.VacationTest do
 
       valid_attrs = Map.put(@valid_attrs, :place_id, place.id)
 
-      assert {:ok, %Booking{} = booking} =
-        Vacation.create_booking(user, valid_attrs)
+      assert {:ok, %Booking{} = booking} = Vacation.create_booking(user, valid_attrs)
 
       assert booking.user == user
       assert booking.state == "reserved"
@@ -185,8 +184,7 @@ defmodule Getaways.VacationTest do
       valid_attrs = Map.put(@valid_attrs, :place_id, place.id)
       invalid_attrs = %{valid_attrs | start_date: nil}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, invalid_attrs)
     end
 
     test "with start date after end date returns error changeset" do
@@ -194,11 +192,9 @@ defmodule Getaways.VacationTest do
       place = place_fixture()
 
       valid_attrs = Map.put(@valid_attrs, :place_id, place.id)
-      invalid_attrs =
-        %{valid_attrs | start_date: ~D[2019-04-10], end_date: ~D[2019-04-01]}
+      invalid_attrs = %{valid_attrs | start_date: ~D[2019-04-10], end_date: ~D[2019-04-01]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, invalid_attrs)
     end
 
     test "with unavailable dates returns error changeset" do
@@ -218,83 +214,63 @@ defmodule Getaways.VacationTest do
       # --------[---------]-------
       # Case 1
       # --------[---------]-------
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-05], end_date: ~D[2019-01-10]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-05], end_date: ~D[2019-01-10]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, attrs)
 
       # Case 2
       # --------[----]------------
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-05], end_date: ~D[2019-01-08]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-05], end_date: ~D[2019-01-08]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, attrs)
 
       # Case 3
       # -------------[----]-------
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-08], end_date: ~D[2019-01-10]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-08], end_date: ~D[2019-01-10]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, attrs)
 
       # Case 4
       # [-----]-------------------
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-01], end_date: ~D[2019-01-04]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-01], end_date: ~D[2019-01-04]}
 
-      assert {:ok, %Booking{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:ok, %Booking{}} = Vacation.create_booking(user, attrs)
 
       # Case 5
       # --------------------[----]
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-11], end_date: ~D[2019-01-12]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-11], end_date: ~D[2019-01-12]}
 
-      assert {:ok, %Booking{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:ok, %Booking{}} = Vacation.create_booking(user, attrs)
 
       # Case 6
       # -----[----]---------------
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-04], end_date: ~D[2019-01-05]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-04], end_date: ~D[2019-01-05]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, attrs)
 
       # Case 7
       # -----------[---]----------
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-07], end_date: ~D[2019-01-08]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-07], end_date: ~D[2019-01-08]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, attrs)
 
       # Case 8
       # ------[-------]-----------
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-04], end_date: ~D[2019-01-08]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-04], end_date: ~D[2019-01-08]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, attrs)
 
       # Case 9
       # --------------[--------]--
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-08], end_date: ~D[2019-01-12]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-08], end_date: ~D[2019-01-12]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, attrs)
 
       # Case 10
       # -----[----------------]---     
-      attrs =
-        %{valid_attrs | start_date: ~D[2019-01-03], end_date: ~D[2019-01-12]}
+      attrs = %{valid_attrs | start_date: ~D[2019-01-03], end_date: ~D[2019-01-12]}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_booking(user, attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_booking(user, attrs)
     end
   end
 
@@ -304,8 +280,7 @@ defmodule Getaways.VacationTest do
       place = place_fixture()
       booking = booking_fixture(user, %{place_id: place.id})
 
-      assert {:ok, %Booking{} = booking} =
-        Vacation.cancel_booking(booking)
+      assert {:ok, %Booking{} = booking} = Vacation.cancel_booking(booking)
       assert booking.state == "canceled"
     end
   end
@@ -322,8 +297,7 @@ defmodule Getaways.VacationTest do
 
       valid_attrs = Map.put(@valid_attrs, :place_id, place.id)
 
-      assert {:ok, %Review{} = review} =
-        Vacation.create_review(user, valid_attrs)
+      assert {:ok, %Review{} = review} = Vacation.create_review(user, valid_attrs)
 
       assert review.user == user
     end
@@ -336,24 +310,21 @@ defmodule Getaways.VacationTest do
 
       invalid_attrs = %{valid_attrs | comment: nil}
 
-      assert {:error, %Ecto.Changeset{}} =
-        Vacation.create_review(user, invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Vacation.create_review(user, invalid_attrs)
     end
   end
 
   defp places_available_between(start_date, end_date) do
     args = [
-      {:filter, 
-        [
-          {
-            :available_between, 
-            %{start_date: start_date, end_date: end_date}
-          }
-        ]
-      }
+      {:filter,
+       [
+         {
+           :available_between,
+           %{start_date: start_date, end_date: end_date}
+         }
+       ]}
     ]
 
     Vacation.list_places(args)
   end
-
 end

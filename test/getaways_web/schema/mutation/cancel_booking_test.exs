@@ -28,38 +28,42 @@ defmodule GetawaysWeb.Schema.Mutation.CancelBookingTest do
     }
 
     conn = build_conn() |> auth_user(user)
-    
-    conn = post conn, "/api",
-      query: @query,
-      variables: input
+
+    conn =
+      post conn, "/api",
+        query: @query,
+        variables: input
 
     assert %{
-      "data" => %{
-       "cancelBooking" => %{
-          "state" => "canceled"
-        }
-      }
-    } == json_response(conn, 200)
+             "data" => %{
+               "cancelBooking" => %{
+                 "state" => "canceled"
+               }
+             }
+           } == json_response(conn, 200)
   end
 
-  test "cancelBooking mutation fails if not signed in" do    
+  test "cancelBooking mutation fails if not signed in" do
     input = %{
       "bookingId" => 1,
       "state" => "canceled"
     }
 
-    conn = post(build_conn(), "/api", %{
-      query: @query,
-      variables: input
-    })
+    conn =
+      post(build_conn(), "/api", %{
+        query: @query,
+        variables: input
+      })
 
     assert %{
-      "data" => %{"cancelBooking" => nil},
-      "errors" => [%{
-        "locations" => [%{"column" => 0, "line" => 2}],
-        "message" => "Please sign in first!",
-        "path" => ["cancelBooking"]
-      }]
-    } == json_response(conn, 200)
+             "data" => %{"cancelBooking" => nil},
+             "errors" => [
+               %{
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" => "Please sign in first!",
+                 "path" => ["cancelBooking"]
+               }
+             ]
+           } == json_response(conn, 200)
   end
 end

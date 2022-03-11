@@ -25,8 +25,7 @@ defmodule Getaways.AccountsTest do
 
     test "with invalid data returns error changeset" do
       invalid_attrs = %{@valid_attrs | username: nil}
-      assert {:error, %Ecto.Changeset{}} = 
-        Accounts.create_user(invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(invalid_attrs)
     end
   end
 
