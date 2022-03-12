@@ -46,6 +46,21 @@ defmodule GetawaysWeb.Schema do
       arg :rating, non_null(:integer)
       resolve &Resolvers.Vacation.create_review/3
     end
+
+    @desc "Create a user account"
+    field :signup, :session do
+      arg :username, non_null(:string)
+      arg :email, non_null(:string)
+      arg :password, non_null(:string)
+      resolve &Resolvers.Accounts.signup/3
+    end
+
+    @desc "Sign in a user"
+    field :signin, :session do
+      arg :username, non_null(:string)
+      arg :password, non_null(:string)
+      resolve &Resolvers.Accounts.signin/3
+    end
   end
 
   input_object :place_filter do
@@ -117,6 +132,11 @@ defmodule GetawaysWeb.Schema do
     end
 
     field :reviews, list_of(:review), resolve: dataloader(Vacation)
+  end
+
+  object :session do
+    field :user, non_null(:user)
+    field :token, non_null(:string)
   end
 
   def middleware(middleware, _field, %{identifier: :mutation}) do
