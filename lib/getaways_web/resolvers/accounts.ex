@@ -18,4 +18,8 @@ defmodule GetawaysWeb.Resolvers.Accounts do
       {:ok, %{user: user, token: token}}
     end
   end
+
+  def me(_, _, %{context: context}) do
+    {:ok, context[:current_user]}
+  end
 end
