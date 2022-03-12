@@ -3,6 +3,7 @@ defmodule GetawaysWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug GetawaysWeb.Plugs.Context
   end
 
   scope "/" do

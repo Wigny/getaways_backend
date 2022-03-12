@@ -4,7 +4,7 @@ defmodule GetawaysWeb.Schema do
   import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
 
   alias Getaways.{Accounts, Vacation}
-  alias GetawaysWeb.Resolvers
+  alias GetawaysWeb.{Middlewares, Resolvers}
 
   import_types Absinthe.Type.Custom
 
@@ -30,12 +30,14 @@ defmodule GetawaysWeb.Schema do
       arg :place_id, non_null(:id)
       arg :start_date, non_null(:date)
       arg :end_date, non_null(:date)
+      middleware Middlewares.Authentication
       resolve &Resolvers.Vacation.create_booking/3
     end
 
     @desc "Cancel a booking"
     field :cancel_booking, :booking do
       arg :booking_id, non_null(:id)
+      middleware Middlewares.Authentication
       resolve &Resolvers.Vacation.cancel_booking/3
     end
 
@@ -44,6 +46,7 @@ defmodule GetawaysWeb.Schema do
       arg :place_id, non_null(:id)
       arg :comment, :string
       arg :rating, non_null(:integer)
+      middleware Middlewares.Authentication
       resolve &Resolvers.Vacation.create_review/3
     end
 
@@ -140,14 +143,14 @@ defmodule GetawaysWeb.Schema do
   end
 
   def middleware(middleware, _field, %{identifier: :mutation}) do
-    middleware ++ [GetawaysWeb.Middlewares.ChangesetErrors]
+    middleware ++ [Middlewares.ChangesetErrors]
   end
 
-  def middleware(middleware, _field, _object), do: middleware
+  def middleware(middleware, _field, _object) do
+    middleware
+  end
 
   def context(ctx) do
-    ctx = Map.put(ctx, :current_user, Accounts.get_user(1))
-
     loader =
       Dataloader.new()
       |> Dataloader.add_source(Vacation, Vacation.datasource())
