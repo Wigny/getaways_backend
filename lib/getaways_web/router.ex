@@ -14,6 +14,7 @@ defmodule GetawaysWeb.Router do
     if Mix.env() == :dev do
       forward "/graphiql", Absinthe.Plug.GraphiQL,
         schema: GetawaysWeb.Schema,
+        socket: GetawaysWeb.UserSocket,
         interface: :playground
     end
   end

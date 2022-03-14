@@ -15,7 +15,8 @@ defmodule Getaways.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Getaways.PubSub},
       # Start the Endpoint (http/https)
-      GetawaysWeb.Endpoint
+      GetawaysWeb.Endpoint,
+      {Absinthe.Subscription, GetawaysWeb.Endpoint}
       # Start a worker by calling: Getaways.Worker.start_link(arg)
       # {Getaways.Worker, arg}
     ]
